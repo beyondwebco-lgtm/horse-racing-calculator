@@ -35,13 +35,16 @@ const EditableCell = ({
       
       const returnAmt = numStake * numOdds;
       const profit = returnAmt - numStake;
+      const percentage = numStake > 0 ? (profit / numStake) * 100 : 0;
       
       setValue(`rows.${index}.returnAmt`, Number(returnAmt.toFixed(2)));
       setValue(`rows.${index}.profit`, Number(profit.toFixed(2)));
+      setValue(`rows.${index}.percentage`, Number(percentage.toFixed(2)));
     } else {
       // Clear if empty
       setValue(`rows.${index}.returnAmt`, null);
       setValue(`rows.${index}.profit`, null);
+      setValue(`rows.${index}.percentage`, null);
     }
   }, [stake, odds, index, setValue]);
 
@@ -50,14 +53,14 @@ const EditableCell = ({
     return <div className="text-center text-slate-500 font-medium py-2">{index + 1}</div>;
   }
   
-  if (["returnAmt", "profit"].includes(id)) {
+  if (["returnAmt", "profit", "percentage"].includes(id)) {
     const val = watch(fieldName as any);
     const isNegative = id === "profit" && val !== null && val < 0;
     const isPositive = id === "profit" && val !== null && val > 0;
     
     return (
       <div className={`px-2 py-2 text-right ${isNegative ? "text-red-600" : isPositive ? "text-green-600" : "text-slate-700"}`}>
-        {val !== null ? formatCurrency(val) : ""}
+        {val !== null ? (id === "percentage" ? `${val}%` : formatCurrency(val)) : ""}
       </div>
     );
   }
@@ -118,9 +121,10 @@ export default function BetTable() {
       { accessorKey: "betType", header: "Bet Type", size: 100 },
       { accessorKey: "stake", header: "Stake", size: 100 },
       { accessorKey: "odds", header: "Odds", size: 80 },
-      { accessorKey: "returnAmt", header: "Return", size: 120 },
+      { accessorKey: "result", header: "Results (manual Input)", size: 150 },
       { accessorKey: "profit", header: "Profit/Loss", size: 120 },
-      { accessorKey: "remarks", header: "Remarks", size: 150 },
+      { accessorKey: "percentage", header: "Percentage", size: 100 },
+      { accessorKey: "returnAmt", header: "Returns", size: 120 },
       {
         id: "actions",
         header: "",
@@ -136,9 +140,10 @@ export default function BetTable() {
                   serialNo: fields.length + 1, // Will be recalculated or visually just index + 1
                   stake: null,
                   odds: null,
-                  returnAmt: null,
+                  result: "",
                   profit: null,
-                  remarks: ""
+                  percentage: null,
+                  returnAmt: null
                 });
               }}
               className="p-1 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors no-print"
@@ -181,9 +186,10 @@ export default function BetTable() {
       odds: null,
       deductionPercent: null,
       netOdds: null,
-      returnAmt: null,
+      result: "",
       profit: null,
-      remarks: "",
+      percentage: null,
+      returnAmt: null,
     });
   };
 

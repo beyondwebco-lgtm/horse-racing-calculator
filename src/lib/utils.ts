@@ -11,9 +11,10 @@ export function createEmptyRows(count: number): BetRow[] {
     odds: null,
     deductionPercent: null,
     netOdds: null,
-    returnAmt: null,
+    result: "",
     profit: null,
-    remarks: "",
+    percentage: null,
+    returnAmt: null,
   }));
 }
 
