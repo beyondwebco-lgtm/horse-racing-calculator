@@ -7,18 +7,20 @@ import { exportToPDF } from "@/lib/pdf";
 import { saveSheet } from "@/lib/api";
 import { useState } from "react";
 import { createEmptyRows } from "@/lib/utils";
+import SearchModal from "./SearchModal";
 
 export default function Header() {
   const { register, getValues, reset } = useFormContext<SheetData>();
   const [isSaving, setIsSaving] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handlePrint = () => {
     window.print();
   };
 
   const handleExportPDF = async () => {
-    alert("To export as a high-quality PDF, the browser's native 'Save as PDF' feature is recommended as it supports modern CSS color spaces and preserves text vectors. \n\nPlease select 'Save as PDF' in the destination dropdown in the print dialog.");
-    window.print();
+    const data = getValues();
+    await exportToPDF(data);
   };
 
   const handleSave = async () => {
@@ -48,7 +50,23 @@ export default function Header() {
   };
 
   const handleSearch = () => {
-    alert("Search feature allows you to load previous sheets from the database. Coming soon!");
+    setIsSearchOpen(true);
+  };
+
+  const handleSelectSheet = (sheet: any) => {
+    reset({
+      date: sheet.date || new Date().toISOString().split("T")[0],
+      raceName: sheet.race_name || "",
+      operatorName: sheet.operator_name || "",
+      rows: sheet.rows || createEmptyRows(50),
+      summary: sheet.summary || {
+        totalBets: 0,
+        totalStake: 0,
+        totalReturn: 0,
+        totalProfit: 0,
+        avgOdds: 0,
+      },
+    });
   };
 
   return (
@@ -111,6 +129,11 @@ export default function Header() {
           />
         </div>
       </div>
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        onSelect={handleSelectSheet} 
+      />
     </header>
   );
 }

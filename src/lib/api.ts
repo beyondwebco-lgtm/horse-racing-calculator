@@ -36,3 +36,28 @@ export const saveSheet = async (data: SheetData) => {
     return { success: false, message: "An unexpected error occurred." };
   }
 };
+
+export const getSheets = async () => {
+  const supabase = createClient();
+  
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder-url")) {
+    return { success: true, data: [] };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("sheets")
+      .select("id, created_at, date, race_name, operator_name, rows, summary")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase error fetching sheets:", error);
+      return { success: false, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    console.error("Unknown error fetching sheets:", err);
+    return { success: false, data: [] };
+  }
+};
