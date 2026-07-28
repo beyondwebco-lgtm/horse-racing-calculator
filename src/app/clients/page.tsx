@@ -1,5 +1,5 @@
-import { getClients, createClientAction, updateClientStatus } from '@/app/actions/clients'
-import { revalidatePath } from 'next/cache'
+import { getClients, createClientAction } from '@/app/actions/clients'
+import ClientList from './ClientList'
 
 export default async function ClientsPage() {
   const clients = await getClients()
@@ -34,41 +34,7 @@ export default async function ClientsPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Mobile</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Opening Bal</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Current Bal</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
-            {clients.map(client => (
-              <tr key={client.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{client.client_id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{client.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{client.mobile_number}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">${client.opening_balance.toFixed(2)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-bold">${client.current_balance.toFixed(2)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                  <form action={async () => {
-                    'use server';
-                    await updateClientStatus(client.id, client.status === 'Active' ? 'Inactive' : 'Active');
-                  }}>
-                    <button type="submit" className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${client.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {client.status}
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ClientList initialClients={clients} />
     </div>
   )
 }
