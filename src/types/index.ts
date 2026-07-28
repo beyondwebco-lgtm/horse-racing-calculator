@@ -8,10 +8,9 @@ export interface BetRow {
   odds: number | null;
   deductionPercent: number | null;
   netOdds: number | null;
-  result: string;
-  profit: number | null;
-  percentage: number | null;
   returnAmt: number | null;
+  profit: number | null;
+  remarks: string;
 }
 
 export interface SheetData {
