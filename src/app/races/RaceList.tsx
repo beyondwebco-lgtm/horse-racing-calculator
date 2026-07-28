@@ -5,8 +5,6 @@ import { Race, Horse } from '@/types/schema';
 import { updateRaceStatus } from '@/app/actions/races';
 import { createHorseAction } from '@/app/actions/horses';
 import { resetRacesAction } from '@/app/actions/db';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 export default function RaceList({ 
   initialRaces, 
@@ -27,7 +25,8 @@ export default function RaceList({
     );
   });
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
+    const { jsPDF } = await import('jspdf');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.setFont('helvetica', 'normal');
     

@@ -1,8 +1,6 @@
 'use client';
 
 import { resetAllAction } from '@/app/actions/db';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 interface ClientData {
   id: string;
@@ -40,7 +38,8 @@ export default function DashboardView({
   const totalProfit = completedBets.reduce((sum, bet) => sum + Number(bet.profit), 0);
   const totalPayout = completedBets.filter(b => b.result === 'Win').reduce((sum, bet) => sum + Number(bet.return_amount), 0);
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
+    const { jsPDF } = await import('jspdf');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.setFont('helvetica', 'normal');
     

@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { Client } from '@/types/schema';
 import { updateClientStatus } from '@/app/actions/clients';
 import { resetClientsAction } from '@/app/actions/db';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 export default function ClientList({ initialClients }: { initialClients: Client[] }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,7 +18,8 @@ export default function ClientList({ initialClients }: { initialClients: Client[
     );
   });
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
+    const { jsPDF } = await import('jspdf');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.setFont('helvetica', 'normal');
     

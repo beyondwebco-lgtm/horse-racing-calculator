@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { createBetAction, updateBetResult } from '@/app/actions/bets';
 import { resetBetsAction } from '@/app/actions/db';
 import { Client, Race, Horse, Bet } from '@/types/schema';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 export default function BetEntryForm({
   clients,
@@ -37,7 +35,8 @@ export default function BetEntryForm({
     );
   });
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
+    const { jsPDF } = await import('jspdf');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.setFont('helvetica', 'normal');
     
